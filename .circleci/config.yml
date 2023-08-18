@@ -1,0 +1,61 @@
+#####################################
+# CircleCI config YAML begins below #
+#####################################
+version: 2.1
+
+environ: &environ
+  environment:
+    REPO: "go-module"
+
+#########################################
+# Standard CircleCI configuration below #
+#########################################
+executors:
+  go:
+    resource_class: small
+    docker:
+      - image: cimg/go:1.19
+
+orbs:
+  pipelines: frameplay/pipelines@1.0
+
+###############################################
+# Define reusable commands to be used in jobs #
+###############################################
+commands:
+  test-go:
+    steps:
+      - checkout
+      - restore_cache:
+          name: Restore Go modules
+          keys:
+            - go-mod-v2-{{ checksum "go.sum" }}
+      - run:
+          name: Install Go modules
+          command: go mod download
+      - save_cache:
+          name: Cache Go modules
+          key: go-mod-v2-{{ checksum "go.sum" }}
+          paths:
+            - "/go/pkg/mod"
+      - run:
+          name: Run unit tests
+          command: go test ./...
+
+##################################
+# Define the CircleCI jobs below #
+##################################
+jobs:
+  job-Test:
+    executor: go
+    steps:
+      - test-go
+
+#######################################
+# Define the CircleCI workflows below #
+#######################################
+workflows:
+  version: 2
+  BuildTestRelease:
+    jobs:
+      - job-Test
