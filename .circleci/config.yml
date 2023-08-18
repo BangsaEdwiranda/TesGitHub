@@ -7,6 +7,14 @@ environ: &environ
   environment:
     REPO: "go-module"
 
+parameters:
+  imagetag:
+    type: string
+    default: "current"
+  appname:
+    type: string
+    default: "main"
+
 #########################################
 # Standard CircleCI configuration below #
 #########################################
