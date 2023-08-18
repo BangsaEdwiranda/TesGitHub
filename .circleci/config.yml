@@ -16,9 +16,6 @@ executors:
     docker:
       - image: cimg/go:1.19
 
-orbs:
-  pipelines: frameplay/pipelines@1.0
-
 ###############################################
 # Define reusable commands to be used in jobs #
 ###############################################
